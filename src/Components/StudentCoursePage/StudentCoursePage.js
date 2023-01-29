@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import People from "../People/People";
+import TeacherPeople from "../People/TeacherPeople";
+import StudentPeople from "../People/StudentPeople";
 import AuthContext from "../../AuthContext";
 
 import banner from './Banner1.png';
@@ -103,7 +104,9 @@ const StudentCoursePage = (props) => {
             {<img src={bottom} alt="Image" className={styles.bottom} />}
           </div> :
           <div>
-            {Role == "student" ? <div><People/></div> : <div>other</div>}
+            <div><TeacherPeople teach={props.name}/></div> 
+            <div><StudentPeople teach={props.name}/></div> 
+            {/* {Role == "student" ? <div><StudentPeople teach={props.name}/></div> : <div>other</div>} */}
           </div>
       }
     </>
