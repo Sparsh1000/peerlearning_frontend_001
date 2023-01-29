@@ -13,7 +13,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Logout from '@mui/icons-material/Logout';
 import AuthContext from '../../AuthContext';
 
-export default function Navbar() {
+export default function Navbar(props) {
 
   const navigate = useNavigate();
 
@@ -74,7 +74,7 @@ export default function Navbar() {
           <Link to='#' className='menu-bars'>
             <Hamburger onClick={showSidebar} />
           </Link>
-          <Link onClick={()=>navigate("/")}>
+          <Link onClick={()=>navigate.push("/")}>
             <h4 className="navbar-title-name">Peer Learning</h4>
           </Link>
 
@@ -135,7 +135,10 @@ export default function Navbar() {
 
             {courses.map((item, index) => {
               return (
-                <li key={index}>
+                <li key={index} onClick={() => {
+                  props.setCourse(item)
+                  navigate.push("/")
+                }}>
                   <div className="list-elements">
                   <p className="first_letter">{item.name.charAt(0)}</p>
                   <Link className="sidebar_name" to={item.path}>

@@ -10,6 +10,8 @@ import Query from './Components/Query/Query';
 import Dashboard from './Components/Dashboard/Dashboard';
 import AuthContext from './AuthContext';
 
+// import StudentCoursePage from "./Components/StudentCoursePage/StudentCoursePage";
+
 
 function App() {
 
@@ -26,11 +28,13 @@ function App() {
 
     <div>
 
+      {/* <StudentCoursePage/> */}
+
       <AuthContext.Provider value={{ userData, setUserData}}>
 
         {userData.token ? (
           <Router>
-            <Navbar/>
+            <Navbar setCourse={setCourse}/>
             <Routes>
               <Route exact path="/" element={<Home course={course} setCourse={setCourse}/>}/>
               <Route exact path="/dashboard" element={<Dashboard/>}/>
@@ -44,22 +48,7 @@ function App() {
         
       </AuthContext.Provider>
 
-      {/* <Login onSuccess={onSuccess} onFailure={onFailure}/> */}
-
     </div>
-    // <>
-    //   <Router>
-    //         <Navbar/>
-    //         <Routes>
-    //           <Route exact path="/" element={<Home/>}/>
-    //           <Route exact path="/dashboard" element={<Dashboard/>}/>
-    //           <Route exact path="/Calendar" element={<Calendar/>}/>
-    //           <Route exact path="/Help" element={<Help/>}/>
-    //           <Route exact path="/Todo" element={<Todo/>}/>
-    //           <Route exact path="/Query" element={<Query/>}/>
-    //         </Routes>
-    //   </Router>
-    // </>
   );
 }
 

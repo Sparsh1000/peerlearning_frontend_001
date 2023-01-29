@@ -1,3 +1,16 @@
+// import React from 'react'
+
+// const CourseCard = () => {
+//   return (
+//     <div>
+      
+//     </div>
+//   )
+// }
+
+// export default CourseCard
+
+
 import React, { useState, useContext, useEffect } from 'react';
 import './CourseCard.css';
 import dashboardimg from "./CourseCard_Images/dashboard.png";
@@ -43,6 +56,7 @@ export default function CourseCard(props) {
 
     const OnCourseClick = () => {
         console.log("OnCourseClick......Hello");
+        props.setCourse(props.data);
     }
 
 
