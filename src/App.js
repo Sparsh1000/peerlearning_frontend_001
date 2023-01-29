@@ -18,22 +18,7 @@ function App() {
     loader: 0,
   });
 
-  const onSuccess = (res) => {
-    setUserData({
-      token: res.credential,
-      user: res.profileObj,
-      loader: 0,
-    });
-    console.log(res);
-  };
-
-  const onFailure = (res) => {
-    console.log("Login failed: res:", res);
-    setUserData({
-      token: undefined,
-      loader: 0,
-    });
-  };
+  const [course, setCourse] = useState({});
 
 
 
@@ -42,11 +27,12 @@ function App() {
     <div>
 
       <AuthContext.Provider value={{ userData, setUserData}}>
+
         {userData.token ? (
           <Router>
             <Navbar/>
             <Routes>
-              <Route exact path="/" element={<Home/>}/>
+              <Route exact path="/" element={<Home course={course} setCourse={setCourse}/>}/>
               <Route exact path="/dashboard" element={<Dashboard/>}/>
               <Route exact path="/Calendar" element={<Calendar/>}/>
               <Route exact path="/Help" element={<Help/>}/>
@@ -54,7 +40,7 @@ function App() {
               <Route exact path="/Query" element={<Query/>}/>
             </Routes>
           </Router>
-        ) : (<Login onSuccess={onSuccess} onFailure={onFailure}/>)}
+        ) : (<Login/>)}
         
       </AuthContext.Provider>
 

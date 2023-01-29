@@ -25,7 +25,11 @@ export default function Navbar() {
   const [courses, setCourses] = useState([]);
 
   const handleLogout = () => {
-    console.log("LOGOUT");
+    // console.log("LOGOUT");
+    setUserData({
+      token: "",
+      loader: 0
+    });
   }
 
   const truncate = (str) => {
@@ -38,22 +42,21 @@ export default function Navbar() {
     }
   }
 
+
+
   useEffect(() => {
     if (userData.token) {
       setUserData((u) => ({ ...u, loader: u.loader + 1 }));
-      fetch("https://classroom.googleapis.com/v1/courses", {
+      fetch("https://classroom.googleapis.com/v1/courses?courseStates=ACTIVE", {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${userData.token}`,
+          'Authorization': `Bearer ${userData.token}`,
         },
       })
         .then((res) => res.json())
         .then((res) => {
           setUserData((u) => ({ ...u, loader: u.loader - 1 }));
           setCourses(res.courses);
-          // len = res.courses.length;
-          // console.log(res.courses[0].name);
-  
         });
   
     }

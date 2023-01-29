@@ -16,7 +16,7 @@ export default function AssignmentCard(){
         </div>
         <div className="MoreImage"><img src={moreimg} alt="More-Options"/>
             <div className="options">
-            <a href="/">View in Classroom <i class="fa fa-external-link" aria-hidden="true"></i></a>
+            <a href="/">View in Classroom <i className="fa fa-external-link" aria-hidden="true"></i></a>
             </div>
         </div>
         </div>
