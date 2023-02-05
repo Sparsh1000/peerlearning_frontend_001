@@ -12,12 +12,13 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Logout from '@mui/icons-material/Logout';
 import AuthContext from '../../AuthContext';
+import user from '../Images/user-2.png';
 
 export default function Navbar(props) {
 
   const navigate = useNavigate();
 
-  const { userData, setUserData } = useContext(AuthContext);
+  const { user, userData, setUserData } = useContext(AuthContext);
 
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
@@ -27,6 +28,7 @@ export default function Navbar(props) {
   const handleLogout = () => {
     // console.log("LOGOUT");
     setUserData({
+      credential: "",
       token: "",
       loader: 0
     });
@@ -40,6 +42,11 @@ export default function Navbar(props) {
     else{
       return str;
     }
+  }
+
+  const onHome = () => {
+    props.setCourse({}) 
+    navigate("/");
   }
 
 
@@ -63,6 +70,9 @@ export default function Navbar(props) {
   
   }, [userData.token]);
 
+  //console.log(user.name);
+  //console.log(user.picture);
+
   return (
 
     <>
@@ -74,14 +84,14 @@ export default function Navbar(props) {
           <Link to='#' className='menu-bars'>
             <Hamburger onClick={showSidebar} />
           </Link>
-          <Link onClick={()=>navigate.push("/")}>
+          <Link onClick={onHome}>
             <h4 className="navbar-title-name">Peer Learning</h4>
           </Link>
 
           <div className="navbar-right-side-icon">
             <Link to="/Help" className="help_page_icon" data-toggle="tooltip" data-placement="botom" title="Help"><HelpIcon/></Link>
-            <Link  data-toggle="tooltip" data-placement="botom" title="KARTIK">
-            <img className="profile_user_name" src="/Images/user-2.png" alt='IMG' onClick={() => setValue(!Value)}></img>
+            <Link  data-toggle="tooltip" data-placement="botom" title={user.name}>
+            <img className="profile_user_name" src={user.picture} alt='userimg' onClick={() => setValue(!Value)}></img>
             </Link>
 
             <MenuItem className={Value ? "nav_hide" : "nav_show"} onClick={handleLogout}>

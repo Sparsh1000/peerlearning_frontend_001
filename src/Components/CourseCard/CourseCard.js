@@ -1,28 +1,15 @@
-// import React from 'react'
-
-// const CourseCard = () => {
-//   return (
-//     <div>
-      
-//     </div>
-//   )
-// }
-
-// export default CourseCard
-
-
-import React, { useState, useContext, useEffect } from 'react';
-import './CourseCard.css';
-import dashboardimg from "./CourseCard_Images/dashboard.png";
-import googleclassroomimg from "./CourseCard_Images/google-classroom.png";
-import bannerimg from "./CourseCard_Images/Banner3.png";
-import { Link } from "react-router-dom";
+import React, { useState, useContext, useEffect} from 'react';
+import { Link, useNavigate } from "react-router-dom";
 import AuthContext from '../../AuthContext';
+import './CourseCard.css';
+import dashboardimg from "../Images/dashboard.png";
+import googleclassroomimg from "../Images/google-classroom.png";
+import bannerimg from "../Images/Banner3.png";
 
 
-// function truncateString1(str) {
-//     return str.length >= 18 ? str.substring(0, 17) + "..." : str;
-// }
+function truncateString1(str) {
+    return str.length >= 18 ? str.substring(0, 17) + "..." : str;
+}
   
 function truncateString2(str) {
     return str.length >= 22 ? str.substring(0, 18) + "..." : str;
@@ -30,13 +17,18 @@ function truncateString2(str) {
 
 export default function CourseCard(props) {
 
+    const navigate = useNavigate();
+
     const [TeachersName, setTeachersName] = useState([]);
     const [Photo, setPhoto] = useState([]);
-    const { userData } = useContext(AuthContext);
+
+    const { userData, setCourse } = useContext(AuthContext);
+
+    let arr = ["Banner1.png", "Banner2.png", "Banner3.png", "Banner4.png", "Banner5.png"];
 
     useEffect(() => {
         if (userData.token) {
-          fetch(`https://classroom.googleapis.com/v1/courses/${props.dataid}/teachers`, {
+          fetch(`https://classroom.googleapis.com/v1/courses/${props.data.id}/teachers`, {
             method: "GET",
             headers: {
               'Authorization': `Bearer ${userData.token}`,
@@ -55,16 +47,20 @@ export default function CourseCard(props) {
 
 
     const OnCourseClick = () => {
-        console.log("OnCourseClick......Hello");
-        props.setCourse(props.data);
+        //console.log("OnCourseClick......Hello");
+        setCourse(props.data);
+        navigate(`/course/${props.data.id}`);
     }
 
+//console.log(arr[(props.index)%5])
+// ${bannerimg}
+// /Images/${arr[(props.index)%5]}
 
     return (
         <>
-            <div className="submain_courseCard" onClick={OnCourseClick}>
-                <div className="classCard__upper" style={{backgroundImage: `url(${bannerimg})`}}>
-                    <div className="name_courseCard">{props.dataname}</div>
+            <div className="submain_courseCard">
+                <div className="classCard__upper" onClick={OnCourseClick} style={{backgroundImage: `url(/images/${arr[(props.index)%5]})`}}>
+                    <div className="name_courseCard">{truncateString1(props.data.name)}</div>
                     <div className="section_courseCard">{truncateString2(TeachersName)}</div>
                     <img className="classCard__creatorPhoto" src={Photo} alt="userimg"/>
                 </div>
@@ -73,7 +69,7 @@ export default function CourseCard(props) {
                     <Link to="/dashboard">
                     <button className="btm2"><img src={dashboardimg} alt="dashboard"/> Dashboard</button>
                     </Link>
-                    <a href={props.alternateLink}>
+                    <a href={props.data.alternateLink}>
                     <button className="btm2"><img src={googleclassroomimg} alt="classroom"/> Classroom</button>
                     </a>
                 </div>

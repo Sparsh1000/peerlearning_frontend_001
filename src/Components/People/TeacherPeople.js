@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from './TeacherPeople.module.css';
 import mail from './mail.svg';
 import Line from './Line.svg';
@@ -6,17 +7,17 @@ import AuthContext from "../../AuthContext";
 
 
 
-function People(props) {
+function TeacherPeople(props) {
 
-
-  const [TeachersName,setTeachersName] = useState([]);
+    const navigate = useNavigate();
+  const [TeachersName, setTeachersName] = useState([]);
   const { userData } = useContext(AuthContext);
 
   useEffect(() => { loadData() }, [userData.token]);
 
   const loadData = async () =>{
     if (userData.token) {
-      await fetch(`https://classroom.googleapis.com/v1/courses/${props.teach.id}/teachers`, //gets the list of all teachers enrolled in the course
+      await fetch(`https://classroom.googleapis.com/v1/courses/${props.course.id}/teachers`, //gets the list of all teachers enrolled in the course
             {
                 method: "GET",
                 headers: {
@@ -31,25 +32,17 @@ function People(props) {
     }
   }
 
-
-//   fetch(`${G_API}/courses/${props.teach.name.id}/teachers`, //gets the list of all teachers enrolled in the course
-//     {
-//       method: "GET",
-//       headers: {
-//         Authorization: `Bearer ${userData.token}`,
-//       },
-//     }
-//   )
-//   .then((r) => r.json())
-//   .then((r) => {
-//     setTeachersName(r.teachers);
-//     setspin(false);
-//   });
-//     console.log(TeachersName);
-
+  const OnAssign = () => {
+    //console.log("OnAssign Clicked");
+    navigate(`/course/${props.course.id}`);
+  }
 
     return (
         <>
+            <div className={styles.topBtn}>
+                <span onClick={OnAssign} className={styles.notu}>Stream</span>
+                <span className={styles.u}>People</span>
+            </div>
             <div className={styles.Teachers}> Teachers
             <img src={Line} id={styles.line} />
             {TeachersName.map((i,p) => {
@@ -72,4 +65,4 @@ function People(props) {
     )
 }
 
-export default People
+export default TeacherPeople

@@ -1,30 +1,34 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { API } from "../../config";
+import AssignmentCard from "../AssignmentCard/AssignmentCard";
 import TeacherPeople from "../People/TeacherPeople";
-import StudentPeople from "../People/StudentPeople";
 import AuthContext from "../../AuthContext";
-
-import banner from './Banner1.png';
 import styles from './StudentCoursePage.module.css';
+import bannerimg from '../Images/Banner1.png';
+import bottomimg from '../Images/Bottom.png';
+import peopleimg from '../Images/People.png';
+import noassignimg from '../Images/noassign.jpg';
 
-import bottom from './bottom.png'
 
-import peep from './People.png';
-import { useHistory } from "react-router-dom";
 
 
 const StudentCoursePage = (props) => {
 
-    
+    const navigate = useNavigate();
   const [TeachersName, setTeachersName] = useState([]);
-  const [tf, settf] = useState(true);
-  const [Role, setRole] = useState("student");
+  const [allAssignments, setAllAssignments] = useState([]);
+  const [peerAssignments, setPeerAssignments] = useState([]);
   const [css, setcss] = useState(false);
-  const [under, setunder] = useState(false);
   const { userData } = useContext(AuthContext);
 
+  // const [tf, settf] = useState(true);
+  //const [Role, setRole] = useState("student");
+  //const [under, setunder] = useState(false);
+  
   useEffect(() => {
-    if (userData.token) {
-      fetch(`https://classroom.googleapis.com/v1/courses/${props.name.id}/teachers`, {
+    if (userData.token && props.course.id) {
+      fetch(`https://classroom.googleapis.com/v1/courses/${props.course.id}/teachers`, { // fetch the teacher name of the course
         method: "GET",
         headers: {
           Authorization: `Bearer ${userData.token}`,
@@ -37,78 +41,122 @@ const StudentCoursePage = (props) => {
           setTeachersName(res.teachers[len - 1].profile.name.fullName);
         });
       // console.log(TeachersName);
-  
+
+      fetch(`https://classroom.googleapis.com/v1/courses/${props.course.id}/courseWork`, { //fetch all the assignments from classrooom and store it in assignments using setAllAssignments
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userData.token}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          setAllAssignments(res.courseWork);
+          //console.log(allAssignments);
+
+          // let assignmentMap = {};
+          // if (res.courseWork !== undefined) {
+          //   res.courseWork.forEach((c) => {
+          //     assignmentMap[c.id] = c;
+          //   });
+          // }
+
+          // fetch(`${API}/api/assignment?course_id=${props.course.id}`, { 
+          //   method: "GET",
+          // })
+          //   .then((res) => res.json())
+          //   .then((res) => {
+          //     let tt = [];
+          //     res.forEach((t) => {
+          //       tt.push({ ...t, ...assignmentMap[t.assignment_id] });
+          //     });
+          //     setPeerAssignments(tt);
+          //     // console.log(peerAssignments);
+          //   });
+
+        });
     }
   
   }, [userData.token]);
 
-
-  // fetch(`${G_API}/courses/${prop.name.id}/teachers`, {
-  //   method: "GET",
-  //   headers: {
-  //     Authorization: `Bearer ${userData.token}`,
-  //   },
-  // })
-  //   .then((res) => res.json())
-  //   .then((res) => {
-  //     var len = res.teachers.length;
-  //     // console.log(res.teachers[len-1].profile.name.fullName);
-  //     setTeachersName(res.teachers[len - 1].profile.name.fullName);
-  //   });
-  // console.log(TeachersName);
-
   const f1 = () => {
     setcss(true)
-    console.log("f1 is pressed")
+    //console.log("f1 is pressed")
   }
   const f2 = () => {
     setcss(false)
-    console.log("f2 is pressed")
+    //console.log("f2 is pressed")
   }
 
-  const funpeople = () => {
-    settf(false);
-    setunder(true);
-  }
-
-  const Assign = () => {
-    settf(true);
-    setunder(false);
+  const OnPeople = () => {
+    //console.log("OnPeople Clicked");
+    navigate(`/people/${props.course.id}`);
   }
 
   return (
-<>
+    <>
       <div className={styles.topBtn}>
-        <span onClick={Assign} className={under ? styles.notu : styles.u}>Stream</span>
-        <span onClick={funpeople} className={under ? styles.u : styles.notu}>People</span>
+        <span className={styles.u}>Stream</span>
+        <span onClick={OnPeople} className={styles.notu}>People</span>
       </div>
-      {
-        tf ?
-          <div>
-            <div className={styles.banner}>
-              <img src={banner} alt="Image" className={styles.img}></img>
-              <p style={{ marginTop: "-104.88px", paddingLeft: "32px", fontWeight: "600", paddingBottom: "15px", color: "white", fontSize: "36px", lineHeight: "43.88px" }}>{props.name.name}</p>
-              <div style={{ marginTop: "-24px", paddingLeft: "32px", display: "flex" }}>
-                <p style={{ fontWeight: "500", color: "white", fontSize: "22px", lineHeight: "26.82px", paddingRight: "24px" }}>{TeachersName} </p>
-                <img onClick={funpeople} src={peep} alt="Image" style={{ width: "25px", height: "24px", cursor: "pointer" }} />
-              </div>
-            </div>
-            <div className={styles.container}>
-              <div className={styles.form}>
-                <div className={styles.formBtn}>
-                  <span onClick={f2} className={css ? styles.not : styles.underline}>Peer Learning Assignments</span>
-                  <span onClick={f1} className={css ? styles.underline : styles.not}>All Assignments</span>
-                </div>
-              </div>
-            </div>
-            {<img src={bottom} alt="Image" className={styles.bottom} />}
-          </div> :
-          <div>
-            <div><TeacherPeople teach={props.name}/></div> 
-            <div><StudentPeople teach={props.name}/></div> 
-            {/* {Role == "student" ? <div><StudentPeople teach={props.name}/></div> : <div>other</div>} */}
+      <div>
+        <div className={styles.banner}>
+          <img src={bannerimg} alt="Image" className={styles.img}></img>
+          <p style={{ marginTop: "-104.88px", paddingLeft: "32px", fontWeight: "600", paddingBottom: "15px", color: "white", fontSize: "36px", lineHeight: "43.88px" }}>{props.course.name}</p>
+          <div style={{ marginTop: "-24px", paddingLeft: "32px", display: "flex" }}>
+            <p style={{ fontWeight: "500", color: "white", fontSize: "22px", lineHeight: "26.82px", paddingRight: "24px" }}>{TeachersName} </p>
+            <img onClick={OnPeople} src={peopleimg} alt="Image" style={{ width: "25px", height: "24px", cursor: "pointer" }} />
           </div>
-      }
+        </div>
+        <div className={styles.container}>
+          <div className={styles.form}>
+            <div className={styles.formBtn}>
+              <span onClick={f2} className={css ? styles.not : styles.underline}>Peer Learning Assignments</span>
+              <span onClick={f1} className={css ? styles.underline : styles.not}>All Assignments</span>
+            </div>
+
+            {css ?
+              <div className="assignment_list" style={{ marginTop: "20px" }} >
+                {/* if not display the msg no assignments */}
+                {allAssignments ? (
+                    <>
+                      {allAssignments.map((p) => (
+                        <AssignmentCard allAssignments={p}/>
+                      ))
+                      }
+                    </>
+                    ) : (
+                        <div className="null_assignment" style={{ marginLeft: "50%", marginTop: "50px" }}>
+                          <img src={noassignimg} alt="logo" width="400" height="250" />
+                          <h3 className={styles.heading}>No assignment is uploaded on selected course</h3>
+                        </div>
+                      )
+                    }
+              </div>
+                  :
+                    // <div className="assignment_list" style={{ marginTop: "20px" }} >
+                    //   {/* if not display the msg no assignments */}
+                    //   {peerAssignments.length === 0 ? (
+                    //     <div className="null_assignment" style={{ marginLeft: "50%", marginTop: "50px" }}>
+                    //       <img src="images/noassign.jpg" alt="logo" width="400" height="250" />
+                    //       <h3 className={styles.heading}>No assignment with peer review on selected course</h3>
+                    //     </div>
+                    //   ) : (<>
+                    //     {peerAssignments.map((p) => (
+                    //       <AssignmentCard key={p._id} peerAssignments={p} ids={idArr} />
+                    //     ))
+                    //     }
+                    //   </>)}
+
+                    // </div>
+                    <div className="null_assignment" style={{ marginLeft: "50%", marginTop: "50px" }}>
+                      <img src={noassignimg} alt="logo" width="400" height="250" />
+                      <h3 className={styles.heading}>No assignment with peer review on selected course</h3>
+                    </div>
+            }
+          </div>
+        </div>
+          {<img src={bottomimg} alt="Image" className={styles.bottom} />}
+      </div>
     </>
   )
 }

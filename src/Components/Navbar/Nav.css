@@ -30,6 +30,7 @@
 }
 
 .navbar-right-side-icon{
+  padding-right: 45px;
   position: absolute;
   right: 0px;
   top: 16px;
@@ -37,12 +38,13 @@
 }
 
 .help_page_icon{
-  padding-right: 28px;
+  padding-right: 30px;
   width: 24px;
   height: 24px;
 }
 
 .profile_user_name{
+  /* padding-right: 28px; */
   width: 32px;
   border-radius: 50%;
 }
