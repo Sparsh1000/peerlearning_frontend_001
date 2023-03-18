@@ -19,49 +19,54 @@ export default function CourseCard(props) {
 
     const navigate = useNavigate();
 
-    const [TeachersName, setTeachersName] = useState([]);
+    const [TeacherName, setTeacherName] = useState([]);
     const [Photo, setPhoto] = useState([]);
-
-    const { userData, setCourse } = useContext(AuthContext);
+    const [role, setRole] = useState("student");
+    const { user, userData, setCourse } = useContext(AuthContext);
 
     let arr = ["Banner1.png", "Banner2.png", "Banner3.png", "Banner4.png", "Banner5.png"];
 
-    useEffect(() => {
+    const loadData = async () =>{
         if (userData.token) {
-          fetch(`https://classroom.googleapis.com/v1/courses/${props.data.id}/teachers`, {
-            method: "GET",
-            headers: {
-              'Authorization': `Bearer ${userData.token}`,
-            },
-          })
-            .then((res) => res.json())
-            .then((res) => {
-                var len = res.teachers.length;
-                setPhoto("https:"+res.teachers[len-1].profile.photoUrl);
-                setTeachersName(res.teachers[len-1].profile.name.fullName);
-            });
-      
-        }
-      
-      }, [userData.token]);
-
+            await fetch(`https://classroom.googleapis.com/v1/courses/${props.data.id}/teachers`, {
+              method: "GET",
+              headers: {
+                'Authorization': `Bearer ${userData.token}`,
+              },
+            })
+              .then((res) => res.json())
+              .then((res) => {
+                  var len = res.teachers.length;
+                  setPhoto("https:"+res.teachers[len-1].profile.photoUrl);
+                  setTeacherName(res.teachers[len-1].profile.name.fullName);
+                  res.teachers.forEach((teacher) => {
+                    if (teacher.profile.emailAddress === user.email) {
+                      setRole("teacher");
+                    }
+                  });
+              });
+          }
+      }
+  
+    useEffect(() => { loadData() }, [userData.token]);
 
     const OnCourseClick = () => {
         //console.log("OnCourseClick......Hello");
         setCourse(props.data);
-        navigate(`/course/${props.data.id}`);
+        if(role==="student"){
+            navigate(`/scourse/${props.data.id}`);
+        }
+        else{
+            navigate(`/tcourse/${props.data.id}`);
+        }
     }
-
-//console.log(arr[(props.index)%5])
-// ${bannerimg}
-// /Images/${arr[(props.index)%5]}
 
     return (
         <>
             <div className="submain_courseCard">
                 <div className="classCard__upper" onClick={OnCourseClick} style={{backgroundImage: `url(/images/${arr[(props.index)%5]})`}}>
                     <div className="name_courseCard">{truncateString1(props.data.name)}</div>
-                    <div className="section_courseCard">{truncateString2(TeachersName)}</div>
+                    <div className="section_courseCard">{truncateString2(TeacherName)}</div>
                     <img className="classCard__creatorPhoto" src={Photo} alt="userimg"/>
                 </div>
                 <div className="classCard__middle"></div>

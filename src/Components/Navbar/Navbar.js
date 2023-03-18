@@ -47,6 +47,7 @@ export default function Navbar(props) {
   const onHome = () => {
     props.setCourse({}) 
     navigate("/");
+    console.log("ONHOME CLICKED");
   }
 
 

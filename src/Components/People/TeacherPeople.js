@@ -7,17 +7,17 @@ import AuthContext from "../../AuthContext";
 
 
 
-function TeacherPeople(props) {
+function TeacherPeople() {
 
     const navigate = useNavigate();
   const [TeachersName, setTeachersName] = useState([]);
-  const { userData } = useContext(AuthContext);
+  const { userData, course } = useContext(AuthContext);
 
   useEffect(() => { loadData() }, [userData.token]);
 
   const loadData = async () =>{
     if (userData.token) {
-      await fetch(`https://classroom.googleapis.com/v1/courses/${props.course.id}/teachers`, //gets the list of all teachers enrolled in the course
+      await fetch(`https://classroom.googleapis.com/v1/courses/${course.id}/teachers`, //gets the list of all teachers enrolled in the course
             {
                 method: "GET",
                 headers: {
@@ -34,7 +34,7 @@ function TeacherPeople(props) {
 
   const OnAssign = () => {
     //console.log("OnAssign Clicked");
-    navigate(`/course/${props.course.id}`);
+    navigate(`/course/${course.id}`);
   }
 
     return (

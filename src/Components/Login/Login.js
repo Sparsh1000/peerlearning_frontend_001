@@ -24,7 +24,8 @@ function Login() {
     function handleCallbackResponse(response){
         //console.log("JWT ID Token: "+response.credential); 
         var UserObject = jwt_decode(response.credential);
-        //console.log(UserObject);
+        console.log(UserObject);
+        console.log(UserObject.email);
         setUser(UserObject);
         setUserData({
             credential: response.credential,

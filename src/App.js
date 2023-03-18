@@ -3,7 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from './Components/Login/Login';
 import Home from "./Components/Home/Home";
 import Navbar from './Components/Navbar/Navbar';
-import StudentCoursePage from "./Components/StudentCoursePage/StudentCoursePage";
+import StudentCoursePage from "./Components/Student/StudentCoursePage";
+import TeacherCoursePage from "./Components/Teacher/TeacherCoursePage";
+import CourseView from "./Components/CourseView/CourseView";
+import StudentCourseView1 from "./Components/Student/StudentCourseView1";
+import StudentAssignmentPage2 from "./Components/Student/StudentAssignmentPage2";
 import TeacherPeople from "./Components/People/TeacherPeople";
 import Calendar from './Components/Calendar/Calendar';
 import Help from './Components/Help/Help';
@@ -17,6 +21,9 @@ function App() {
 
   const [ user, setUser ] = useState({});
   const [course, setCourse] = useState({});
+  const [assignment, setAssignment] = useState({});
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
 
   const [userData, setUserData] = useState({
     credential: undefined,
@@ -28,20 +35,23 @@ function App() {
 
     <div>
 
-      <AuthContext.Provider value={{ user, setUser, userData, setUserData, course, setCourse}}>
+      <AuthContext.Provider value={{ user, setUser, userData, setUserData, course, setCourse, assignment, setAssignment, open, setOpen, message, setMessage}}>
 
         {userData.token ? (
           <Router>
             <Navbar setCourse={setCourse}/>
             <Routes>
-              <Route exact path="/" element={<Home course={course} setCourse={setCourse}/>}/>
+              <Route exact path="/" element={<Home />}/>
               <Route exact path="/dashboard" element={<Dashboard/>}/>
               <Route exact path="/Calendar" element={<Calendar/>}/>
               <Route exact path="/Help" element={<Help/>}/>
               <Route exact path="/Todo" element={<Todo/>}/>
               <Route exact path="/Query" element={<Query/>}/>
-              <Route exact path="/course/:course_id" element={<StudentCoursePage course={course} />}/>
-              <Route exact path="/people/:course_id" element={<TeacherPeople course={course} />}/>
+              <Route exact path="/scourse/:course_id" element={<StudentCoursePage />}/>
+              <Route exact path="/tcourse/:course_id" element={<TeacherCoursePage />}/>
+              <Route exact path="/people/:course_id" element={<TeacherPeople />}/>
+              <Route exact path="/acourse/:course_id/:assignment_id" element={<StudentAssignmentPage2 />}/>
+              <Route exact path="/inacourse/:course_id/:assignment_id" element={<StudentCourseView1 />}/>
             </Routes>
           </Router>
         ) : (<Login/>)}

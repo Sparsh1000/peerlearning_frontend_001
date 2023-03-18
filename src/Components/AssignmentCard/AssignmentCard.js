@@ -1,9 +1,15 @@
-import React from 'react'
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import AuthContext from '../../AuthContext';
 import './AssignmentCard.css'
-import assignmentimg from './AssignmentCard_Images/Assignment.png';
-import moreimg from './AssignmentCard_Images/more.png';
+import assignmentimg from '../Images/Assignment.png';
+import moreimg from '../Images/more.png';
 
 export default function AssignmentCard(props){
+
+  const navigate = useNavigate();
+
+  const { setAssignment } = useContext(AuthContext);
 
   var day = '-';
   var month = '-';
@@ -15,9 +21,15 @@ export default function AssignmentCard(props){
   }
 
 
+  const OnCard = () => {
+    //console.log("OnCard Clicked");
+    setAssignment(props.allAssignments);
+    navigate(`/acourse/${props.allAssignments.courseId}/${props.allAssignments.id}`);
+  }
+
   return (
     <>
-        <div className="submain">
+        <div onClick={OnCard} className="submain" >
         <div className="left-part">
             <div className="Image"><img src={assignmentimg} alt="assignmentimg"/></div>
             <div>

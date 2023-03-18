@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API } from "../../config";
+import { G_API, API } from "../../config";
 import AssignmentCard from "../AssignmentCard/AssignmentCard";
+import PeerAssignmentCard from "../AssignmentCard/PeerAssignmentCard";
 import TeacherPeople from "../People/TeacherPeople";
 import AuthContext from "../../AuthContext";
 import styles from './StudentCoursePage.module.css';
@@ -13,22 +14,20 @@ import noassignimg from '../Images/noassign.jpg';
 
 
 
-const StudentCoursePage = (props) => {
+const StudentCoursePage = () => {
 
     const navigate = useNavigate();
   const [TeachersName, setTeachersName] = useState([]);
   const [allAssignments, setAllAssignments] = useState([]);
   const [peerAssignments, setPeerAssignments] = useState([]);
   const [css, setcss] = useState(false);
-  const { userData } = useContext(AuthContext);
+  const { userData, course} = useContext(AuthContext);
 
-  // const [tf, settf] = useState(true);
   //const [Role, setRole] = useState("student");
-  //const [under, setunder] = useState(false);
-  
-  useEffect(() => {
-    if (userData.token && props.course.id) {
-      fetch(`https://classroom.googleapis.com/v1/courses/${props.course.id}/teachers`, { // fetch the teacher name of the course
+
+  const loadData = async () =>{
+    if (userData.token && course.id) {
+      await fetch(`${G_API}/courses/${course.id}/teachers`, { // fetch the teacher name of the course
         method: "GET",
         headers: {
           Authorization: `Bearer ${userData.token}`,
@@ -42,7 +41,7 @@ const StudentCoursePage = (props) => {
         });
       // console.log(TeachersName);
 
-      fetch(`https://classroom.googleapis.com/v1/courses/${props.course.id}/courseWork`, { //fetch all the assignments from classrooom and store it in assignments using setAllAssignments
+      await fetch(`${G_API}/courses/${course.id}/courseWork`, { //fetch all the assignments from classrooom and store it in assignments using setAllAssignments
         method: "GET",
         headers: {
           Authorization: `Bearer ${userData.token}`,
@@ -51,32 +50,44 @@ const StudentCoursePage = (props) => {
         .then((res) => res.json())
         .then((res) => {
           setAllAssignments(res.courseWork);
+          //console.log("All Assignments");
           //console.log(allAssignments);
 
-          // let assignmentMap = {};
-          // if (res.courseWork !== undefined) {
-          //   res.courseWork.forEach((c) => {
-          //     assignmentMap[c.id] = c;
-          //   });
-          // }
+          let assignmentMap = {};
+          if (res.courseWork !== undefined) {
+            res.courseWork.forEach((c) => {
+              assignmentMap[c.id] = c;
+            });
+          }
 
-          // fetch(`${API}/api/assignment?course_id=${props.course.id}`, { 
-          //   method: "GET",
-          // })
-          //   .then((res) => res.json())
-          //   .then((res) => {
-          //     let tt = [];
-          //     res.forEach((t) => {
-          //       tt.push({ ...t, ...assignmentMap[t.assignment_id] });
-          //     });
-          //     setPeerAssignments(tt);
-          //     // console.log(peerAssignments);
-          //   });
+          //console.log("fetching peer assignments");
+
+          fetch(`${API}/api/assignment?course_id=${course.id}`, { 
+            method: "GET",
+          })
+            .then((res) => res.json())
+            .then((res) => {
+              let tt = [];
+              res.forEach((t) => {
+                tt.push({ ...t, ...assignmentMap[t.assignment_id] });
+              });
+              setPeerAssignments(tt);
+              // console.log("Peer Assignments");
+              // console.log(peerAssignments);
+            });
 
         });
     }
-  
-  }, [userData.token]);
+  }
+
+  useEffect(() => { loadData() }, [userData.token]);
+
+  var idArr = [];
+  if (allAssignments) {
+    for (var i = 0; i <allAssignments.length; i++) {
+      idArr.push(allAssignments[i].id);
+    }
+  }
 
   const f1 = () => {
     setcss(true)
@@ -89,7 +100,7 @@ const StudentCoursePage = (props) => {
 
   const OnPeople = () => {
     //console.log("OnPeople Clicked");
-    navigate(`/people/${props.course.id}`);
+    navigate(`/people/${course.id}`);
   }
 
   return (
@@ -101,7 +112,7 @@ const StudentCoursePage = (props) => {
       <div>
         <div className={styles.banner}>
           <img src={bannerimg} alt="Image" className={styles.img}></img>
-          <p style={{ marginTop: "-104.88px", paddingLeft: "32px", fontWeight: "600", paddingBottom: "15px", color: "white", fontSize: "36px", lineHeight: "43.88px" }}>{props.course.name}</p>
+          <p style={{ marginTop: "-104.88px", paddingLeft: "32px", fontWeight: "600", paddingBottom: "15px", color: "white", fontSize: "36px", lineHeight: "43.88px" }}>{course.name}</p>
           <div style={{ marginTop: "-24px", paddingLeft: "32px", display: "flex" }}>
             <p style={{ fontWeight: "500", color: "white", fontSize: "22px", lineHeight: "26.82px", paddingRight: "24px" }}>{TeachersName} </p>
             <img onClick={OnPeople} src={peopleimg} alt="Image" style={{ width: "25px", height: "24px", cursor: "pointer" }} />
@@ -133,24 +144,19 @@ const StudentCoursePage = (props) => {
                     }
               </div>
                   :
-                    // <div className="assignment_list" style={{ marginTop: "20px" }} >
-                    //   {/* if not display the msg no assignments */}
-                    //   {peerAssignments.length === 0 ? (
-                    //     <div className="null_assignment" style={{ marginLeft: "50%", marginTop: "50px" }}>
-                    //       <img src="images/noassign.jpg" alt="logo" width="400" height="250" />
-                    //       <h3 className={styles.heading}>No assignment with peer review on selected course</h3>
-                    //     </div>
-                    //   ) : (<>
-                    //     {peerAssignments.map((p) => (
-                    //       <AssignmentCard key={p._id} peerAssignments={p} ids={idArr} />
-                    //     ))
-                    //     }
-                    //   </>)}
-
-                    // </div>
-                    <div className="null_assignment" style={{ marginLeft: "50%", marginTop: "50px" }}>
-                      <img src={noassignimg} alt="logo" width="400" height="250" />
-                      <h3 className={styles.heading}>No assignment with peer review on selected course</h3>
+                    <div className="assignment_list" style={{ marginTop: "20px" }} >
+                      {/* if not display the msg no assignments */}
+                      {peerAssignments.length === 0 ? (
+                        <div className="null_assignment" style={{ marginLeft: "50%", marginTop: "50px" }}>
+                          <img src="images/noassign.jpg" alt="logo" width="400" height="250" />
+                          <h3 className={styles.heading}>No assignment with peer review on selected course</h3>
+                        </div>
+                      ) : (<>
+                        {peerAssignments.map((p) => (
+                          <PeerAssignmentCard peerAssignments={p} ids={idArr} />
+                        ))
+                        }
+                      </>)}
                     </div>
             }
           </div>
