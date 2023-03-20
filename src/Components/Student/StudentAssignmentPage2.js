@@ -2,17 +2,18 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AuthContext from "../../AuthContext";
 import { G_API, API } from "../../config";
-import StudentCourseView2 from "../Student/StudentCourseView2";
+import StudentAssignmentView1 from "./StudentAssignmentView1";
+import StudentAssignmentView2 from "./StudentAssignmentView2";
 import Spinner from "../Spinner/Spinner";
 
 
 const StudentAssignmentPage2 = () => {
-    const id = "63f0f8333eb3207a2418b6d3";
+    //const id = "63f0f8333eb3207a2418b6d3";
 
-    const { course_id } = useParams(); //id is for assignment's _id of peer assignment
+    const {id, course_id } = useParams(); //id is for assignment's _id of peer assignment
     const [assignment, setAssignment] = useState([]); //for storing info about the assignment fetched from both classroom and peer learning
     const [assignment2, setAssignment2] = useState({});
-    const [role, setRole] = useState("student");
+    //const [role, setRole] = useState("student");
     const [activities, setActivities] = useState([]); //for storing info about a student and their reviewers info with marks and comments
     const [self, setSelf] = useState({});
     const [mail, setMail] = useState("");
@@ -27,7 +28,7 @@ const StudentAssignmentPage2 = () => {
 //     studentUserId: "",
 //   });
   
-    const { user, userData, setUserData } = useContext(AuthContext);
+    const { user, userData, setUserData, role } = useContext(AuthContext);
 
     const loadData = async () =>{
         if (userData.token) {
@@ -58,27 +59,27 @@ const StudentAssignmentPage2 = () => {
     useEffect(() => { loadData() }, [userData.token]);
 
 
-    const loadData2 = async () =>{
-        if (userData.token) {
+    // const loadData2 = async () =>{
+    //     if (userData.token) {
         
-            await fetch(`${G_API}/courses/${course_id}/teachers`, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${userData.token}`,
-            },
-            })
-            .then((res) => res.json())
-            .then((res) => {
-                res.teachers.forEach((teacher) => {
-                if (teacher.profile.emailAddress === user.email) {
-                    setRole("teacher");
-                }
-                });
-            });
-        }
-    }
+    //         await fetch(`${G_API}/courses/${course_id}/teachers`, {
+    //         method: "GET",
+    //         headers: {
+    //             Authorization: `Bearer ${userData.token}`,
+    //         },
+    //         })
+    //         .then((res) => res.json())
+    //         .then((res) => {
+    //             res.teachers.forEach((teacher) => {
+    //             if (teacher.profile.emailAddress === user.email) {
+    //                 setRole("teacher");
+    //             }
+    //             });
+    //         });
+    //     }
+    // }
 
-    useEffect(() => { loadData2() }, []);
+    // useEffect(() => { loadData2() }, []);
 
     const getStudentReviews1 = async () => {
         //setUserData((u) => ({ ...u, loader: u.loader + 1 }));
@@ -203,8 +204,8 @@ const StudentAssignmentPage2 = () => {
         
     }, [role, assignment._id, assignment.status]);
 
-    // console.log("assignment");
-    // console.log(assignment);
+    console.log("assignment");
+    console.log(assignment);
     // console.log("self");
     // console.log(self);
     // console.log("activites");
@@ -218,7 +219,10 @@ const StudentAssignmentPage2 = () => {
             :   <div className="dashboard">
                     <div className="contain">
                         {  role === "student" ?
-                            <StudentCourseView2 assg={assignment}  self={self} activities={activities} marks={marks} setSelf={setSelf} setActivities={setActivities} />
+                                // <StudentAssignmentView1 assg={assignment}  self={self} activities={activities} marks={marks} setSelf={setSelf} setActivities={setActivities} />
+                                // <StudentAssignmentView2 assg={assignment} activities={activities} marks={marks} setActivities={setActivities}/>
+                                 assignment.status === "Assigned" ? <StudentAssignmentView1 assg={assignment}  self={self} activities={activities} marks={marks} setSelf={setSelf} setActivities={setActivities} />
+                                 : <StudentAssignmentView2 assg={assignment} activities={activities} marks={marks} setActivities={setActivities}/>
                             : null
                         }
                     </div>

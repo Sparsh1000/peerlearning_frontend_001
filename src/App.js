@@ -6,7 +6,7 @@ import Navbar from './Components/Navbar/Navbar';
 import StudentCoursePage from "./Components/Student/StudentCoursePage";
 import TeacherCoursePage from "./Components/Teacher/TeacherCoursePage";
 import CourseView from "./Components/CourseView/CourseView";
-import StudentCourseView1 from "./Components/Student/StudentCourseView1";
+import StudentAssignmentPage1 from "./Components/Student/StudentAssignmentPage1";
 import StudentAssignmentPage2 from "./Components/Student/StudentAssignmentPage2";
 import TeacherPeople from "./Components/People/TeacherPeople";
 import Calendar from './Components/Calendar/Calendar';
@@ -22,6 +22,7 @@ function App() {
   const [ user, setUser ] = useState({});
   const [course, setCourse] = useState({});
   const [assignment, setAssignment] = useState({});
+  const [role, setRole] = useState("student");
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -35,7 +36,7 @@ function App() {
 
     <div>
 
-      <AuthContext.Provider value={{ user, setUser, userData, setUserData, course, setCourse, assignment, setAssignment, open, setOpen, message, setMessage}}>
+      <AuthContext.Provider value={{ user, setUser, userData, setUserData, course, setCourse, assignment, setAssignment, role, setRole, open, setOpen, message, setMessage}}>
 
         {userData.token ? (
           <Router>
@@ -51,7 +52,7 @@ function App() {
               <Route exact path="/tcourse/:course_id" element={<TeacherCoursePage />}/>
               <Route exact path="/people/:course_id" element={<TeacherPeople />}/>
               <Route exact path="/acourse/:course_id/:assignment_id" element={<StudentAssignmentPage2 />}/>
-              <Route exact path="/inacourse/:course_id/:assignment_id" element={<StudentCourseView1 />}/>
+              <Route exact path="/inacourse/:course_id/:assignment_id" element={<StudentAssignmentPage1 />}/>
             </Routes>
           </Router>
         ) : (<Login/>)}

@@ -3,23 +3,24 @@ import { useNavigate } from "react-router-dom";
 import { G_API, API } from "../../config";
 import AssignmentCard from "../AssignmentCard/AssignmentCard";
 import PeerAssignmentCard from "../AssignmentCard/PeerAssignmentCard";
-import TeacherPeople from "../People/TeacherPeople";
 import AuthContext from "../../AuthContext";
 import styles from './StudentCoursePage.module.css';
 import bannerimg from '../Images/Banner1.png';
 import bottomimg from '../Images/Bottom.png';
 import peopleimg from '../Images/People.png';
 import noassignimg from '../Images/noassign.jpg';
+import Spinner from "../Spinner/Spinner";
 
 
 
 
 const StudentCoursePage = () => {
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [TeachersName, setTeachersName] = useState([]);
   const [allAssignments, setAllAssignments] = useState([]);
   const [peerAssignments, setPeerAssignments] = useState([]);
+  const [spin, setSpin] = useState(true);
   const [css, setcss] = useState(false);
   const { userData, course} = useContext(AuthContext);
 
@@ -77,6 +78,8 @@ const StudentCoursePage = () => {
             });
 
         });
+
+        setSpin(false);
     }
   }
 
@@ -103,9 +106,17 @@ const StudentCoursePage = () => {
     navigate(`/people/${course.id}`);
   }
 
+  // console.log("allAssignments");
+  // console.log(allAssignments);
+  // console.log("peerAssignments");
+  // console.log(peerAssignments);
+
   return (
     <>
-      <div className={styles.topBtn}>
+      {
+        spin ? <Spinner/> :
+        <div className="StudentCoursePage">
+          <div className={styles.topBtn}>
         <span className={styles.u}>Stream</span>
         <span onClick={OnPeople} className={styles.notu}>People</span>
       </div>
@@ -131,7 +142,7 @@ const StudentCoursePage = () => {
                 {allAssignments ? (
                     <>
                       {allAssignments.map((p) => (
-                        <AssignmentCard allAssignments={p}/>
+                        <AssignmentCard assignment={p} peerAssignments={peerAssignments}/>
                       ))
                       }
                     </>
@@ -160,9 +171,11 @@ const StudentCoursePage = () => {
                     </div>
             }
           </div>
+        </div>  
         </div>
           {<img src={bottomimg} alt="Image" className={styles.bottom} />}
-      </div>
+        </div>
+      }
     </>
   )
 }

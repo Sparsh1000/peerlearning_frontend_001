@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AuthContext from "../../AuthContext";
 import { G_API, API } from "../../config";
-import StudentCourseView2 from "../Student/StudentCourseView2";
+import StudentCourseView2 from "../Student/StudentAssignmentView1";
 import Spinner from "../Spinner/Spinner";
 
 

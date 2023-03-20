@@ -27,12 +27,12 @@ import Thumbnail from "./Assests/thumbnail.png";
 import People from "./Assests/People.svg";
 import bottom from "../Images/Bottom.png";
 
-// // import Account from "../Popups/PopUp";
-// // import Self from "../Popups/SelfPopup";
-// // import Submitpop from "../Popups/Submitpop";
-// // import FinalisePopup from "../Popups/FinalisePop";
-// // import SelfFinalisePopup from "../Popups/selfFinalisePopup";
-// // import MarksPopup from "../Popups/MarksPopup";
+import Account from "../Popups/PopUp";
+import Self from "../Popups/SelfPopup";
+import Submitpop from "../Popups/Submitpop";
+import FinalisePopup from "../Popups/FinalisePop";
+import SelfFinalisePopup from "../Popups/selfFinalisePopup";
+import MarksPopup from "../Popups/MarksPopup";
 
 function conversion(hours, minutes) {
     var t;
@@ -83,7 +83,7 @@ function none(hours) {
 
 var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-function StudentCourseView2({ assg, self, activities, marks, setSelf, setActivities }) {
+function StudentAssignmentView1({ assg, self, activities, marks, setSelf, setActivities }) {
     // console.log("StudentCourseView2");
     // console.log("assignment");
     // console.log(assg);
@@ -103,7 +103,7 @@ function StudentCourseView2({ assg, self, activities, marks, setSelf, setActivit
     const [sub, setsub] = useState(false);
     const [marksvalue, SetmarksValue] = useState(false);
 
-    const loadData1 = async () =>{
+    const loadData = async () =>{
 
       if (userData.token) {
         await fetch(`${G_API}/courses/${assg.courseId}/teachers`, {
@@ -125,6 +125,8 @@ function StudentCourseView2({ assg, self, activities, marks, setSelf, setActivit
           });
       }
   }
+
+  useEffect(() => { loadData() }, [userData.token]);
 
   // console.log(self);
     
@@ -252,14 +254,14 @@ function StudentCourseView2({ assg, self, activities, marks, setSelf, setActivit
                 </div>
             {<img src={bottom} alt="Image" className={styles.bottom} />}
 
-            {/* <Account wrapperValue={wrapper} SetWrapperValue={setwrapper} marks={marks} activities={activities} setActivities={setActivities} i={val} />
+            <Account wrapperValue={wrapper} SetWrapperValue={setwrapper} marks={marks} activities={activities} setActivities={setActivities} i={val} />
             <Self wrapperValue={wrap} SetWrapperValue={setwrap} self={self} marks={marks} setSelf={setSelf} />
             <FinalisePopup Finalise={Finalise} SetFinalise={SetFinalise} activities={activities} setActivities={setActivities} i={val}/>
             <SelfFinalisePopup selfFinalise={selfFinalise} SetselfFinalise={SetselfFinalise} self={self} setSelf={setSelf} />
             <Submitpop Sub={sub} SetSub={setsub} self={self} setSelf={setSelf} activities={activities} setActivities={setActivities}/>
-            <MarksPopup marksvalue={marksvalue} SetmarksValue={SetmarksValue} marks={marks} activities={activities}/> */}
+            <MarksPopup marksvalue={marksvalue} SetmarksValue={SetmarksValue} marks={marks} activities={activities}/>
         </>
     )
 }
 
-export default StudentCourseView2
+export default StudentAssignmentView1

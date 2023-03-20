@@ -68,25 +68,6 @@ const Home = () => {
         {<img src={bottomimg} alt="bottomimg" className="bottom" />}
       </div>
     }
-    {/* <div className="home1">
-        <div className="head">
-          <button className="btm3"><img src={queryimg} alt="Queries" /> Queries</button>
-          <Link to="/Todo">
-            <button className="btm3"><img src={todoimg} alt="Todos" /> To-Do</button>
-          </Link>
-          <Link to="/Calendar">
-            <button className="btm3"><img src={calendarimg} alt="Calendar"/> Calendar</button>
-          </Link>
-        </div>
-    </div>
-    <div className={styles.home2}>
-
-        {courses ? courses.map((data,index) => (
-          <CourseCard key={data.id} data={data} index={index} />  //image={imgArr[index % 5]}
-        )) : null}
-
-    </div> */}
-    {/* {<img src={bottomimg} alt="bottomimg" className="bottom" />} */}
   </>
   )
 }

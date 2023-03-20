@@ -21,8 +21,8 @@ export default function CourseCard(props) {
 
     const [TeacherName, setTeacherName] = useState([]);
     const [Photo, setPhoto] = useState([]);
-    const [role, setRole] = useState("student");
-    const { user, userData, setCourse } = useContext(AuthContext);
+    //const [role, setRole] = useState("student");
+    const { user, userData, setCourse, role, setRole } = useContext(AuthContext);
 
     let arr = ["Banner1.png", "Banner2.png", "Banner3.png", "Banner4.png", "Banner5.png"];
 

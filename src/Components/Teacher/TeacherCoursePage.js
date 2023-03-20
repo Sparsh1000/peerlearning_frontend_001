@@ -139,7 +139,7 @@ const TeacherCoursePage = () => {
                                 <AddPeerAssignment allAssignments={allAssignments} setPeerAssignments={setPeerAssignments}/>
                                 
                                 {allAssignments.map((p) => (
-                                    <AllAssignmentCard allAssignments={p}/>
+                                    <AllAssignmentCard allAssignments={p} peerAssignments={peerAssignments}/>
                                 ))
                                 }
                             </>)}
