@@ -52,6 +52,9 @@ export default function CourseCard(props) {
 
     const OnCourseClick = () => {
         //console.log("OnCourseClick......Hello");
+        // setCourse(props.data);
+        // navigate(`/tcourse/${props.data.id}`);
+
         setCourse(props.data);
         if(role==="student"){
             navigate(`/scourse/${props.data.id}`);

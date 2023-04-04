@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import AuthContext from '../../AuthContext';
 import { useNavigate } from "react-router-dom";
-// import { useHistory } from "react-router-dom";
-// import { makeStyles } from "@material-ui/core/styles";
 import './AssignmentCard.css'
 import asimg from '../Images/Assignment.png';
 import more from '../Images/more.png';
@@ -44,7 +42,7 @@ const PeerAssignmentCard = (props) => {
   <>
     {props.ids.map((e)=>(
       e === props.peerAssignments.assignment_id ? 
-    <div className="submain" >
+    <div onClick={OnCard} className="submain" >
       <div className="left-part">
         <div className="Image"><img src={asimg} alt="Assignment-Image"/></div>
         <div>

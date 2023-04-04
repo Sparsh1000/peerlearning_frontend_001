@@ -28,6 +28,7 @@ const StudentCoursePage = () => {
 
   const loadData = async () =>{
     if (userData.token && course.id) {
+      
       await fetch(`${G_API}/courses/${course.id}/teachers`, { // fetch the teacher name of the course
         method: "GET",
         headers: {
@@ -40,7 +41,6 @@ const StudentCoursePage = () => {
           // console.log(res.teachers[len-1].profile.name.fullName);
           setTeachersName(res.teachers[len - 1].profile.name.fullName);
         });
-      // console.log(TeachersName);
 
       await fetch(`${G_API}/courses/${course.id}/courseWork`, { //fetch all the assignments from classrooom and store it in assignments using setAllAssignments
         method: "GET",
@@ -51,8 +51,6 @@ const StudentCoursePage = () => {
         .then((res) => res.json())
         .then((res) => {
           setAllAssignments(res.courseWork);
-          //console.log("All Assignments");
-          //console.log(allAssignments);
 
           let assignmentMap = {};
           if (res.courseWork !== undefined) {
@@ -61,7 +59,7 @@ const StudentCoursePage = () => {
             });
           }
 
-          //console.log("fetching peer assignments");
+          console.log("fetching peer assignments");
 
           fetch(`${API}/api/assignment?course_id=${course.id}`, { 
             method: "GET",
@@ -73,8 +71,6 @@ const StudentCoursePage = () => {
                 tt.push({ ...t, ...assignmentMap[t.assignment_id] });
               });
               setPeerAssignments(tt);
-              // console.log("Peer Assignments");
-              // console.log(peerAssignments);
             });
 
         });
@@ -106,10 +102,10 @@ const StudentCoursePage = () => {
     navigate(`/people/${course.id}`);
   }
 
-  // console.log("allAssignments");
-  // console.log(allAssignments);
-  // console.log("peerAssignments");
-  // console.log(peerAssignments);
+  console.log("allAssignments");
+  console.log(allAssignments);
+  console.log("peerAssignments");
+  console.log(peerAssignments);
 
   return (
     <>
@@ -117,19 +113,19 @@ const StudentCoursePage = () => {
         spin ? <Spinner/> :
         <div className="StudentCoursePage">
           <div className={styles.topBtn}>
-        <span className={styles.u}>Stream</span>
-        <span onClick={OnPeople} className={styles.notu}>People</span>
-      </div>
-      <div>
-        <div className={styles.banner}>
+            <span className={styles.u}>Stream</span>
+            <span onClick={OnPeople} className={styles.notu}>People</span>
+          </div>
+          <div>
+          <div className={styles.banner}>
           <img src={bannerimg} alt="Image" className={styles.img}></img>
           <p style={{ marginTop: "-104.88px", paddingLeft: "32px", fontWeight: "600", paddingBottom: "15px", color: "white", fontSize: "36px", lineHeight: "43.88px" }}>{course.name}</p>
           <div style={{ marginTop: "-24px", paddingLeft: "32px", display: "flex" }}>
             <p style={{ fontWeight: "500", color: "white", fontSize: "22px", lineHeight: "26.82px", paddingRight: "24px" }}>{TeachersName} </p>
             <img onClick={OnPeople} src={peopleimg} alt="Image" style={{ width: "25px", height: "24px", cursor: "pointer" }} />
           </div>
-        </div>
-        <div className={styles.container}>
+          </div>
+          <div className={styles.container}>
           <div className={styles.form}>
             <div className={styles.formBtn}>
               <span onClick={f2} className={css ? styles.not : styles.underline}>Peer Learning Assignments</span>
@@ -171,8 +167,8 @@ const StudentCoursePage = () => {
                     </div>
             }
           </div>
-        </div>  
-        </div>
+          </div>  
+          </div>
           {<img src={bottomimg} alt="Image" className={styles.bottom} />}
         </div>
       }

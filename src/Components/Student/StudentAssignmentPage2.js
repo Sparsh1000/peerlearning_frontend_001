@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import AuthContext from "../../AuthContext";
 import { G_API, API } from "../../config";
 import StudentAssignmentView1 from "./StudentAssignmentView1";
@@ -8,12 +7,13 @@ import Spinner from "../Spinner/Spinner";
 
 
 const StudentAssignmentPage2 = () => {
-    //const id = "63f0f8333eb3207a2418b6d3";
 
-    const {id, course_id } = useParams(); //id is for assignment's _id of peer assignment
-    const [assignment, setAssignment] = useState([]); //for storing info about the assignment fetched from both classroom and peer learning
+    const { user, userData, setUserData, assignment, role } = useContext(AuthContext);
+    const _id = assignment._id;
+    const course_id = assignment.course_id;
+
+    const [assignment1, setAssignment1] = useState([]); //for storing info about the assignment fetched from both classroom and peer learning
     const [assignment2, setAssignment2] = useState({});
-    //const [role, setRole] = useState("student");
     const [activities, setActivities] = useState([]); //for storing info about a student and their reviewers info with marks and comments
     const [self, setSelf] = useState({});
     const [mail, setMail] = useState("");
@@ -22,18 +22,13 @@ const StudentAssignmentPage2 = () => {
     const [spin1, setSpin1] = useState(true);
     const [spin2, setSpin2] = useState(true);
 
-//   const [studentRollNo, setStudentRollNo] = useState();
-//   const [studentInfo, setStudentInfo] = useState({
-//     RollNo: "",
-//     studentUserId: "",
-//   });
-  
-    const { user, userData, setUserData, role } = useContext(AuthContext);
+    // console.log("id: "+_id);
+    // console.log("course id: "+course_id);
 
     const loadData = async () =>{
         if (userData.token) {
             // setUserData((u) => ({ ...u, loader: u.loader + 1 }));
-            await fetch(`${API}/api/peer/assignment?peer_assignment_id=${id}`)
+            await fetch(`${API}/api/peer/assignment?peer_assignment_id=${_id}`)
               .then((res) => res.json())
               .then(async (res) => {
                 console.log(res);
@@ -48,7 +43,7 @@ const StudentAssignmentPage2 = () => {
                 )
                   .then((r) => r.json())
                   .then((r) => {
-                    setAssignment({ ...res, ...r }); 
+                    setAssignment1({ ...res, ...r }); 
                     setMarks(res.max_marks_per_question);
                     setSpin1(false);
                   });
@@ -58,32 +53,9 @@ const StudentAssignmentPage2 = () => {
 
     useEffect(() => { loadData() }, [userData.token]);
 
-
-    // const loadData2 = async () =>{
-    //     if (userData.token) {
-        
-    //         await fetch(`${G_API}/courses/${course_id}/teachers`, {
-    //         method: "GET",
-    //         headers: {
-    //             Authorization: `Bearer ${userData.token}`,
-    //         },
-    //         })
-    //         .then((res) => res.json())
-    //         .then((res) => {
-    //             res.teachers.forEach((teacher) => {
-    //             if (teacher.profile.emailAddress === user.email) {
-    //                 setRole("teacher");
-    //             }
-    //             });
-    //         });
-    //     }
-    // }
-
-    // useEffect(() => { loadData2() }, []);
-
     const getStudentReviews1 = async () => {
         //setUserData((u) => ({ ...u, loader: u.loader + 1 }));
-        await fetch(`${API}/api/reviewerassignments?course_work_id=${assignment.assignment_id}&user_id=${user.sub}`)
+        await fetch(`${API}/api/reviewerassignments?course_work_id=${assignment1.assignment_id}&user_id=${user.sub}`)
         .then((res) => res.json())
         .then((res) => {
             //console.log("getStudentReviews1 Res");
@@ -91,8 +63,8 @@ const StudentAssignmentPage2 = () => {
           let ac = [];
           res.forEach((r) => {
             if (r.review_score.length === 0) {
-              r.review_score = Array(assignment.total_questions).fill(0);
-              r.reviewer_comment = Array(assignment.total_questions).fill("");
+              r.review_score = Array(assignment1.total_questions).fill(0);
+              r.reviewer_comment = Array(assignment1.total_questions).fill("");
             }
             if (r.author_id !== r.reviewer_id) {
               ac.push(r);
@@ -108,104 +80,28 @@ const StudentAssignmentPage2 = () => {
 
     const getStudentReviews2 = async () => {
         //setUserData((u) => ({ ...u, loader: u.loader + 1 }));
-        await fetch(`${API}/api/reviews?peer_assignment_id=${id}&student_id=${user.sub}`)
+        await fetch(`${API}/api/reviews?peer_assignment_id=${_id}&student_id=${user.sub}`)
           .then((res) => res.json())
           .then((res) => {
             console.log(res);
             setActivities(res);
+            setSpin2(false);
             //setUserData((u) => ({ ...u, loader: u.loader - 1 }));
           });
-    };
-
-    const getTeacherReviews = async () => {
-        //setUserData((u) => ({ ...u, loader: u.loader + 1 }));
-        await fetch(`${API}/api/peeractivity?peer_assignment_id=${id}`) //for getting reviews and comments of students
-            .then((res) => res.json())
-            .then((res) => {
-            // console.log("res for getting reviews and comments");
-            // console.log(res);
-            fetch(
-                `https://classroom.googleapis.com/v1/courses/${course_id}/students`, //gets the list of all students enrolled in the course
-                {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${userData.token}`,
-                },
-                }
-            )
-                .then((r) => r.json())
-                .then((r) => {
-                setUserData((u) => ({ ...u, loader: u.loader - 1 }));
-                
-                let a = [];
-                let authorMap = {};  //for storing the list of all students info with their id as key
-                r.students.forEach((s) => {
-                    authorMap[s.userId] = [s];
-                });
-                
-                res.forEach((activity) => {
-                    if (authorMap[activity.author_id] !== undefined) {
-                    authorMap[activity.author_id] = [
-                        ...authorMap[activity.author_id],
-                        {
-                        ...activity,
-                        ...authorMap[activity.reviewer_id][0].profile,
-                        },
-                    ];
-                    }
-                });
-
-                Object.keys(authorMap).forEach((author) => {
-                    a.push(authorMap[author]);
-                });
-                setActivities([...a]);
-                let em = []; //store ids of students who have not submitted their reviews
-                res.forEach((act) => {
-                    if (act.review_score.length === 0) {
-                    em.push(authorMap[act.reviewer_id][0].profile.emailAddress);
-                    }
-                });
-                var countReviewr = 0;
-                a.forEach((tttt) => {
-                    if (countReviewr < (tttt.length)) {
-                    countReviewr = tttt.length - 1;
-                    }
-                });
-                
-                setReviewerCount(countReviewr);
-                
-                setMail(
-                    "mailto:" +
-                    encodeURI(em) +
-                    "?subject=" +
-                    encodeURI("Complete the review process ASAP") +
-                    "&body=" +
-                    encodeURI(
-                    "Submit the reviews on assigned answersheets. Link - https://serene-agnesi-9ee115.netlify.app/"
-                    )
-                );
-                
-                });
-            });
-    };    
+    }; 
 
     useEffect(() => { 
-        if (role === "student" && assignment.status === "Assigned"){
+        if (role === "student" && assignment1.status === "Assigned"){
             getStudentReviews1();
             console.log("gsr1");
         }
-        if (role === "student" && assignment.status === "Grading"){
+        if (role === "student" && assignment1.status === "Grading"){
             getStudentReviews2();
-        }
-        if(role === "teacher"){
-            getTeacherReviews();
-        }
+        }        
+    }, [role, assignment1._id, assignment1.status]);
 
-        
-    }, [role, assignment._id, assignment.status]);
-
-    console.log("assignment");
-    console.log(assignment);
+    // console.log("assignment");
+    // console.log(assignment1);
     // console.log("self");
     // console.log(self);
     // console.log("activites");
@@ -221,8 +117,8 @@ const StudentAssignmentPage2 = () => {
                         {  role === "student" ?
                                 // <StudentAssignmentView1 assg={assignment}  self={self} activities={activities} marks={marks} setSelf={setSelf} setActivities={setActivities} />
                                 // <StudentAssignmentView2 assg={assignment} activities={activities} marks={marks} setActivities={setActivities}/>
-                                 assignment.status === "Assigned" ? <StudentAssignmentView1 assg={assignment}  self={self} activities={activities} marks={marks} setSelf={setSelf} setActivities={setActivities} />
-                                 : <StudentAssignmentView2 assg={assignment} activities={activities} marks={marks} setActivities={setActivities}/>
+                                 assignment1.status === "Assigned" ? <StudentAssignmentView1 assg={assignment1}  self={self} activities={activities} marks={marks} setSelf={setSelf} setActivities={setActivities} />
+                                 : <StudentAssignmentView2 assg={assignment1} activities={activities} marks={marks} setActivities={setActivities}/>
                             : null
                         }
                     </div>

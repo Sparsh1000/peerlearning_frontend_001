@@ -33,35 +33,32 @@ export default function AssignmentCard(props){
   }
 
   const OnCard = () => {
+
+    // setAssignment(props.assignment);
+    // navigate(`/inacourse/${props.assignment.courseId}/${props.assignment.id}`);
+
     if (role === "student") {
-      //setAssignment(props.assignment);
-      // console.log("Assignments");
-      // console.log(props.assignment);
-      // console.log("peerAssignments");
-      // console.log(props.peerAssignments);
       var res = peerassId.indexOf(props.assignment.id);
       if (res == -1){
-        //View(assignment.id,assignment.courseId);
         setAssignment(props.assignment);
         navigate(`/inacourse/${props.assignment.courseId}/${props.assignment.id}`);
       }
       else{
+        setAssignment(props.peerAssignments[res]);
+        navigate(`/acourse/${props.peerAssignments[res].course_id}/${props.peerAssignments[res]._id}`);
+      } 
+    }
+    else {
+      var res = peerassId.indexOf(props.assignment.id);
+      if (res == -1){
+        setAssignment(props.assignment);
+        navigate(`/inacourse/${props.assignment.courseId}/${props.assignment.id}`);
+      }
+      else{
+        setAssignment(props.peerAssignments[res]);
         navigate(`/acourse/${props.peerAssignments[res].course_id}/${props.peerAssignments[res]._id}`);
       }
-
-      //navigate(`/acourse/${props.assignment.courseId}/${props.assignment.id}`);
-        
     }
-    // else {
-    //   var res = peerassId.indexOf(assignment.id);
-    //   if (res == -1)
-    //   {
-    //     View(assignment.id,assignment.courseId);
-    //     history.push(`/TeacherView1/${assignment.id}/${assignment.courseId}`);
-    //   }
-    //   else
-    //     history.push(`/dashboard/${peerAssg.assg[res].course_id}/${peerAssg.assg[res]._id}`);
-    // }
   }
   
   // const OnCard = () => {

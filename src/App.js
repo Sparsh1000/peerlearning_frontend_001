@@ -4,10 +4,11 @@ import Login from './Components/Login/Login';
 import Home from "./Components/Home/Home";
 import Navbar from './Components/Navbar/Navbar';
 import StudentCoursePage from "./Components/Student/StudentCoursePage";
-import TeacherCoursePage from "./Components/Teacher/TeacherCoursePage";
-import CourseView from "./Components/CourseView/CourseView";
 import StudentAssignmentPage1 from "./Components/Student/StudentAssignmentPage1";
 import StudentAssignmentPage2 from "./Components/Student/StudentAssignmentPage2";
+import TeacherCoursePage from "./Components/Teacher/TeacherCoursePage";
+import TeacherAssignmentPage1 from "./Components/Teacher/TeacherAssignmentPage1";
+import TeacherAssignmentPage2 from "./Components/Teacher/TeacherAssignmentPage2";
 import TeacherPeople from "./Components/People/TeacherPeople";
 import Calendar from './Components/Calendar/Calendar';
 import Help from './Components/Help/Help';
@@ -51,8 +52,10 @@ function App() {
               <Route exact path="/scourse/:course_id" element={<StudentCoursePage />}/>
               <Route exact path="/tcourse/:course_id" element={<TeacherCoursePage />}/>
               <Route exact path="/people/:course_id" element={<TeacherPeople />}/>
-              <Route exact path="/acourse/:course_id/:assignment_id" element={<StudentAssignmentPage2 />}/>
-              <Route exact path="/inacourse/:course_id/:assignment_id" element={<StudentAssignmentPage1 />}/>
+              {/* <Route exact path="/acourse/:course_id/:assignment_id" element={<TeacherAssignmentPage2/>}/>
+              <Route exact path="/inacourse/:course_id/:assignment_id" element={<TeacherAssignmentPage1/>}/> */}
+              <Route exact path="/acourse/:course_id/:assignment_id" element={ role==="student" ? <StudentAssignmentPage2/> : <TeacherAssignmentPage2/>}/>
+              <Route exact path="/inacourse/:course_id/:assignment_id" element={ role==="student" ? <StudentAssignmentPage1/> : <TeacherAssignmentPage1/>}/>
             </Routes>
           </Router>
         ) : (<Login/>)}

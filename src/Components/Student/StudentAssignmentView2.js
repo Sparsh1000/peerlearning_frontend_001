@@ -1,24 +1,7 @@
-// import React from 'react'
-
-// const StudentAssignmentView2 = () => {
-//   return (
-//     <div>
-//       <h1>HELLO</h1>
-//       <h1>HELLO</h1>
-//       <h1>HELLO</h1>
-//       <h1>HELLO</h1>
-
-//       <h1>HELLO</h1>
-//     </div>
-//   )
-// }
-
-// export default StudentAssignmentView2
-
 import React, { useContext, useEffect, useState } from "react";
 import { G_API, API } from "../../config";
 import AuthContext from "../../AuthContext";
-import styles from './Student_View3.module.css';
+import styles from './StudentAssignmentView2.module.css';
 import { ReactComponent as AssignmentIcon } from "./Assests/Assignment.svg";
 import { ReactComponent as MoreIcon } from "./Assests/more.svg";
 import { ReactComponent as Line } from "./Assests/Line.svg";

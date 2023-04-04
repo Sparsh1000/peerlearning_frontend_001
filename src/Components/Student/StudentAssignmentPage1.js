@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import AuthContext from "../../AuthContext";
 import { G_API } from "../../config";
-import styles from './StudentView1.module.css';
+import styles from './StudentAssignmentPage1.module.css';
 import { ReactComponent as AssignmentIcon } from "./Assests/Assignment.svg";
 import { ReactComponent as MoreIcon } from "./Assests/more.svg";
 import { ReactComponent as Line } from "./Assests/Line.svg";
